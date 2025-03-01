@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Management - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen flex items-center justify-center">
+    <div class="w-full max-w-md p-8">
+        <!-- Hostel Name Outside the Box -->
+        <div class="text-center mb-8">
+            <h1 class="text-5xl font-bold text-black">MAHESH HOSTELS</h1>
+            <p class="text-sm text-gray-600 mt-1">Associated with Dr. M.G.R. EDUCATION AND RESEARCH INSTITUTE</p>
+        </div>
+        
+        <!-- Login Box -->
+        <div class="bg-white p-8 rounded-lg shadow-lg space-y-6">
+            <h2 class="text-3xl font-semibold text-left text-gray-800">Login</h2>
+            {% if messages %}
+            <div class="max-w-4xl mx-auto mb-4">
+              {% for message in messages %}
+              <div class="p-3 text-white rounded-lg shadow-md {% if message.tags == 'success' %} bg-green-600 {% else %} bg-red-600 {% endif %}">
+                {{ message }}
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+            <!-- Login Form -->
+            <form action="{% url 'login_view' %}" method="POST">
+                {% csrf_token %}
+                <!-- Register Number -->
+                <div class="space-y-4">
+                    <div>
+                        <label for="register_number" class="block text-gray-600">Register Number</label>
+                        <input type="text" id="register_number" name="register_number" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your Register Number" required>
+                    </div>
+                    
+                    <!-- Password -->
+                    <div>
+                        <label for="password" class="block text-gray-600">Password</label>
+                        <input type="password" id="password" name="password" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your password" required>
+                    </div>
+
+                    <!-- Forgot Password Link -->
+                    <div class="text-left p-2">
+                        <a href="{% url 'forgot_password' %}" class="text-sm text-blue-600 hover:text-blue-700">Forgot Password?</a>
+                    </div>
+                </div>
+                
+                <!-- Sign In Button -->
+                <div>
+                    <button type="submit" class="w-full py-3 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition duration-200">Sign In</button>
+                </div>
+            </form>
+
+            <!-- Footer -->
+            <div class="text-center mt-6 text-sm text-gray-600">
+                <p>&copy; 2025 MAHESH HOSTELS PVT LTD. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

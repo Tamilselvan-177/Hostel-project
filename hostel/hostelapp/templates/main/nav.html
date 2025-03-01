@@ -1,0 +1,85 @@
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const sidebar = document.getElementById('sidebar');
+        const isOpen = menu.classList.contains('opacity-0');
+
+        if (isOpen) {
+            // Open menu
+            menu.classList.remove('opacity-0', 'invisible');
+            sidebar.classList.remove('translate-x-full');
+        } else {
+            // Close menu
+            menu.classList.add('opacity-0', 'invisible');
+            sidebar.classList.add('translate-x-full');
+        }
+    }
+</script>
+{% load static %}<!-- Header -->
+<header class="bg-black shadow-md fixed w-full z-50">
+    <div class="container mx-auto px-6 py-2 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <!-- Logo -->
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="h-12 w-12">
+            <!-- Title with subtext -->
+            <div>
+                <div class="text-xl font-bold text-blue-600">MAHESH HOSTELS PVT LTD</div>
+                <div class="text-xs text-gray-400">(Dr. M.G.R. EDUCATION AND RESEARCH INSTITUTE)</div>
+            </div>
+        </div>
+        <nav class="hidden md:flex space-x-6">
+            <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}text-blue-600 font-semibold{% else %}text-white hover:text-blue-600{% endif %}">
+                Home
+            </a>
+            <a href="{% url 'financial' %}" class="{% if request.resolver_match.url_name == 'financial' %}text-blue-600 font-semibold{% else %}text-white hover:text-blue-600{% endif %}">
+                Financial
+            </a>
+            <a href="{% url 'raise_issue' %}" class="{% if request.resolver_match.url_name == 'raise_issue' %}text-blue-600 font-semibold{% else %}text-white hover:text-blue-600{% endif %}">
+                Raise Issue
+            </a>
+            <a href="{% url 'profile' %}" class="{% if request.resolver_match.url_name == 'profile' %}text-blue-600 font-semibold{% else %}text-white hover:text-blue-600{% endif %}">
+                Profile
+            </a>
+            <a href="{% url 'logout' %}" class="text-white hover:text-blue-600">
+                Logout
+            </a>
+        </nav>
+        <!-- Mobile Menu Toggle Button -->
+        <button class="md:hidden text-white" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</header>
+
+
+<!-- Mobile Menu (Slider) -->
+<div id="mobile-menu" class="fixed inset-0 z-40 opacity-0 invisible transition-opacity duration-300">
+    <!-- Overlay -->
+    <div class="fixed inset-0 bg-gray-800 bg-opacity-50" onclick="toggleMenu()"></div>
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed right-0 top-0 h-full w-64 bg-white transform transition-transform duration-300 translate-x-full">
+        <div class="flex justify-end p-4">
+            <button onclick="toggleMenu()" class="text-gray-700">
+                <i class="fas fa-times text-3xl"></i>
+            </button>
+        </div>
+        <div class="flex flex-col items-center">
+            <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}text-blue-600 font-semibold{% else %}text-gray-700 hover:text-blue-600{% endif %} py-4 text-lg w-full text-center">
+                Home
+            </a>
+            <a href="{% url 'financial' %}" class="{% if request.resolver_match.url_name == 'financial' %}text-blue-600 font-semibold{% else %}text-gray-700 hover:text-blue-600{% endif %} py-4 text-lg w-full text-center">
+                Financial
+            </a>
+            <a href="{% url 'raise_issue' %}" class="{% if request.resolver_match.url_name == 'raise_issue' %}text-blue-600 font-semibold{% else %}text-gray-700 hover:text-blue-600{% endif %} py-4 text-lg w-full text-center">
+                Raise Issue
+            </a>
+            <a href="{% url 'profile' %}" class="{% if request.resolver_match.url_name == 'profile' %}text-blue-600 font-semibold{% else %}text-gray-700 hover:text-blue-600{% endif %} py-4 text-lg w-full text-center">
+                Profile
+            </a>
+            <!-- Logout Button for Mobile -->
+            <a href="{% url 'logout' %}" class="text-gray-700 hover:text-blue-600 py-4 text-lg w-full text-center">
+                Logout
+            </a>
+        </div>
+    </div>
+</div>

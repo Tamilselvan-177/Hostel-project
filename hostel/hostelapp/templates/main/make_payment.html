@@ -1,0 +1,28 @@
+{% extends 'main/index.html' %}
+{% block content %}
+<main class="pt-20 pb-10 container mx-auto px-4 md:px-10">
+
+    <section class="bg-blue-500 text-white p-4 md:p-6 rounded-lg shadow-md mb-6 max-w-4xl mx-auto">
+        <h2 class="text-xl font-semibold">Make Payment for Semester {{ semester.semester }}</h2>
+        
+        <div class="bg-white text-gray-900 p-4 rounded-lg mt-4">
+            <p>Total Fees: ₹{{ semester.full_amount }}</p>
+            <p>Amount Paid So Far: ₹{{ amount_paid }}</p>
+            <p>Balance Due: ₹{{ balance }}</p>
+            
+            <form method="POST">
+                {% csrf_token %}
+                
+                {% if balance > 0 %}
+                    <label for="amount_paid">Amount to Pay:</label>
+                    <input type="number" name="amount_paid" id="amount_paid" min="0" max="{{ balance }}" step="0.01" value="{{ balance }}" required>
+                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-500">Pay Now</button>
+                {% else %}
+                    <p>Your fees are already fully paid.</p>
+                {% endif %}
+            </form>
+        </div>
+    </section>
+
+</main>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block content %}
+    <main class="pt-20 pb-10 flex-grow">
+        <div class="container mx-auto px-6">
+            <div class="bg-white p-6 rounded-lg shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-xl">
+                <h2 class="text-xl font-semibold text-black mb-4">Raise an Issue</h2>
+
+                <!-- Display Success Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="mb-4 p-3 rounded-lg text-white {% if message.tags == 'success' %}bg-green-600{% elif message.tags == 'error' %}bg-red-600{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="id_title" class="block text-sm font-medium text-gray-700">Issue Title</label>
+                        <input type="text" id="id_title" name="title" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-black transition duration-300 hover:shadow-md hover:ring-2 hover:ring-gray-600" placeholder="Enter the title of your issue">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="id_description" class="block text-sm font-medium text-gray-700">Issue Description</label>
+                        <textarea id="id_description" name="description" rows="4" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-black transition duration-300 hover:shadow-md hover:ring-2 hover:ring-gray-600" placeholder="Describe your issue"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        Submit Issue
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+{% endblock %}

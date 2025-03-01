@@ -1,0 +1,171 @@
+{% load static %}
+
+<!-- invoice_template.html -->
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice #{{ payment.id }}</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f8f8f8;
+        }
+        .invoice-container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #ffffff;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.15);
+            color: #333;
+        }
+        .invoice-header {
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .invoice-header h1 {
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: 1px;
+        }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .logo-container img {
+            max-width: 150px; /* Adjust size as needed */
+            height: auto;
+        }
+        .invoice-info {
+            margin-bottom: 30px;
+            overflow: auto;
+        }
+        .company-info {
+            float: left;
+            width: 50%;
+        }
+        .company-info h2 {
+            margin: 0;
+            font-size: 22px;
+            color: #007BFF;
+        }
+        .company-info p {
+            margin: 5px 0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .invoice-details {
+            float: right;
+            width: 45%;
+            text-align: right;
+        }
+        .invoice-details p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        .clear { clear: both; }
+        .payment-details table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .payment-details th,
+        .payment-details td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+            font-size: 14px;
+        }
+        .payment-details th {
+            background: #f0f0f0;
+        }
+        .invoice-total {
+            text-align: right;
+            margin-top: 20px;
+        }
+        .invoice-total h2 {
+            font-size: 20px;
+            margin: 0;
+            color: #007BFF;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #888;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <!-- Logo -->
+        <!-- <div class="logo-container">
+            <img src="{% static 'images/logo.png' %}" alt="Company Logo">
+
+        </div> -->
+
+        <!-- Header -->
+        <div class="invoice-header">
+            <h1>Invoice</h1>
+            <p>Invoice #: {{ payment.id }}</p>
+        </div>
+
+        <!-- Company & Invoice Details -->
+        <div class="invoice-info">
+            <div class="company-info">
+                <h2>Mahesh Hostels Pvt Ltd </h2>
+                <p>Associated with Dr. M.G.R. EDUCATION AND RESEARCH INSTITUTE<br>
+                   <br>
+                   India</p>
+            </div>
+            <div class="invoice-details">
+                <p><strong>Date:</strong> {{ payment.date_paid|date:"d/m/Y" }}</p>
+                <p><strong>Due Date:</strong> {{ payment.date_paid|date:"d/m/Y" }}</p>
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <!-- Payment Details Table -->
+        <div class="payment-details">
+            <table>
+                <tr>
+                    <th>Fee Type</th>
+                    <td>{{ payment.semester.semester }} Semester Fees</td>
+                </tr>
+                <tr>
+                    <th>Amount Paid</th>
+                    <td>₹{{ payment.amount_paid }}</td>
+                </tr>
+                <tr>
+                    <th>Paid On</th>
+                    <td>{{ payment.date_paid|date:"d/m/Y H:i A" }}</td>
+                </tr>
+                <tr>
+                    <th>Mode of Payment</th>
+                    <td>Online</td>
+                </tr>
+                <tr>
+                    <th>Reference</th>
+                    <td>{{ payment.transaction_id }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Total Amount -->
+        <div class="invoice-total">
+            <h2>Total Amount: ₹{{ payment.amount_paid }}</h2>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Thank you!</p>
+        </div>
+    </div>
+</body>
+</html>

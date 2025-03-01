@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Page - Hostel Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const sidebar = document.getElementById('sidebar');
+            const isOpen = menu.classList.contains('opacity-0');
+
+            if (isOpen) {
+                // Open menu
+                menu.classList.remove('opacity-0', 'invisible');
+                sidebar.classList.remove('translate-x-full');
+            } else {
+                // Close menu
+                menu.classList.add('opacity-0', 'invisible');
+                sidebar.classList.add('translate-x-full');
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 font-sans min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white shadow-md fixed w-full z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-blue-600">HostelPro</div>
+            <nav class="hidden md:flex space-x-6">
+                <a href="home.html" class="text-gray-700 hover:text-blue-600">Home</a>
+                <a href="financial.html" class="text-blue-600 font-semibold">Financial</a>
+                <a href="./raise.html" class="text-gray-700 hover:text-blue-600">Raise Issue</a>
+                <a href="profile.html" class="text-gray-700 hover:text-blue-600">Profile</a>
+            </nav>
+            <!-- Mobile Menu Toggle Button -->
+            <button class="md:hidden text-gray-700" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Menu (Slider) -->
+    <div id="mobile-menu" class="fixed inset-0 z-40 opacity-0 invisible transition-opacity duration-300">
+        <!-- Overlay -->
+        <div class="fixed inset-0 bg-gray-800 bg-opacity-50" onclick="toggleMenu()"></div>
+        <!-- Sidebar -->
+        <div id="sidebar" class="fixed right-0 top-0 h-full w-64 bg-white transform transition-transform duration-300 translate-x-full">
+            <div class="flex justify-end p-4">
+                <button onclick="toggleMenu()" class="text-gray-700">
+                    <i class="fas fa-times text-3xl"></i>
+                </button>
+            </div>
+            <div class="flex flex-col items-center">
+                <a href="home.html" class="text-gray-700 py-4 text-lg w-full text-center">Home</a>
+                <a href="financial.html" class="text-blue-600 py-4 text-lg w-full text-center">Financial</a>
+                <a href="raise.html" class="text-gray-700 py-4 text-lg w-full text-center">Raise Issue</a>
+                <a href="profile.html" class="text-gray-700 py-4 text-lg w-full text-center">Profile</a>
+            </div>
+        </div>
+    </div>
+    <!-- Raise Issue Form -->
+    <main class="pt-20 pb-10 flex-grow">
+        <div class="container mx-auto px-6">
+            <div class="bg-white p-6 rounded-lg shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-xl">
+                <h2 class="text-xl font-semibold text-black mb-4">Raise an Issue</h2>
+                <form>
+                    <div class="mb-4">
+                        <label for="issue-title" class="block text-sm font-medium text-gray-700">Issue Title</label>
+                        <input type="text" id="issue-title" name="issue-title" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition duration-300 hover:shadow-md hover:ring-2 hover:ring-blue-400" placeholder="Enter the title of your issue">
+                    </div>
+                    <div class="mb-4">
+                        <label for="issue-description" class="block text-sm font-medium text-gray-700">Issue Description</label>
+                        <textarea id="issue-description" name="issue-description" rows="4" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 transition duration-300 hover:shadow-md hover:ring-2 hover:ring-blue-400" placeholder="Describe your issue"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        Submit Issue
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+   <!-- Footer -->
+   <footer class="bg-white shadow-md mt-auto">
+    <div class="container mx-auto px-6 py-4 text-center text-gray-600">
+        <p>&copy; 2025 HostelPro. All rights reserved.</p>
+    </div>
+</footer>
+
+    
+  
+</body>
+</html>

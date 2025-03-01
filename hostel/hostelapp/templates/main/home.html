@@ -1,0 +1,129 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block content %}
+   {% if messages %}
+    <div class="max-w-4xl mx-auto mb-4">
+      {% for message in messages %}
+      <div class="p-3 text-white rounded-lg shadow-md {% if message.tags == 'success' %} bg-green-600 {% else %} bg-red-600 {% endif %}">
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <main class="pt-20 pb-10 container mx-auto px-6">
+            <!-- Welcome Banner -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+        <h2 class="text-2xl font-bold text-black">Welcome, {{ user.first_name }}!</h2>
+        <p class="text-gray-600">
+            Hostel: Block {{ profile.hostel }} | Room: {{ profile.room_number }} | Bed No: {{ profile.bed }}
+        </p>
+    </div>
+ 
+    <!-- Grid Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Due Payments Section -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-semibold text-red-600">📢 Your Due Payments</h3>
+            <ul class="list-disc pl-5 text-gray-600">
+                {% for due in dues %}
+                    <li>Semester {{ due.semester.semester }} - ₹{{ due.due_amount }} - Due Date: {{ due.due_date }}</li>
+                {% empty %}
+                    <li>No pending dues.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Payment History Section -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-semibold text-green-600">✅ Payment History</h3>
+            <ul class="list-disc pl-5 text-gray-600">
+                {% for payment in fee_payments %}
+                    <li>Semester {{ payment.semester }} - ₹{{ payment.amount_paid }} - Paid on {{ payment.date_paid }}</li>
+                {% empty %}
+                    <li>No payments made yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Completed Dues Section -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-semibold text-blue-600">✔️ Completed Dues</h3>
+            <ul class="list-disc pl-5 text-gray-600">
+                {% for due in completed_dues %}
+                    <li>Semester {{ due.semester.semester }} - ₹{{ due.amount_paid }} - Paid on {{ due.date_paid }}</li>
+                {% empty %}
+                    <li>No completed dues.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- Calendar Section -->
+    <div class="bg-white p-6 rounded-lg shadow-md mt-6 mb-8 pb-8">
+        <h3 class="text-lg font-semibold text-indigo-600">📅 Fee Due Dates</h3>
+        <div id="calendar"></div>
+    </div>
+  <!-- Cards Section -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+    <!-- Room Details -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-lg font-semibold text-black">🏠 Room Details</h3>
+        <p class="text-gray-600">Room No: {{ profile.room_number }} | Block: {{ profile.hostel }}</p>
+        <!-- <p class="text-gray-600">Roommates: Alex, Sam</p> -->
+    </div>
+
+    <!-- Announcements -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-lg font-semibold text-yellow-600">📢 Announcements</h3>
+        <p class="text-gray-600">Water supply maintenance on Feb 10.</p>
+        <p class="text-gray-600">Hostel fest registrations open!</p>
+    </div>
+</div>
+
+<!-- Hostel Policies & Raise an Issue -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    <!-- Hostel Policies -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-lg font-semibold text-red-600">📖 Hostel Policies</h3>
+        <ul class="list-disc pl-5 text-gray-600">
+            <li>Entry after 10 PM not allowed</li>
+            <li>No loud music after 9 PM</li>
+            <li>Visitors only allowed in lobby</li>
+        </ul>
+        <!-- <a href="/policies" class="mt-2 inline-block text-blue-600 hover:underline">View Full Policies</a> -->
+    </div>
+
+    <!-- Raise an Issue -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-lg font-semibold text-purple-600">🛠 Raise an Issue</h3>
+        <p class="text-gray-600">Facing issues with plumbing, electricity, or cleanliness?</p>
+        <a href="{% url 'raise_issue' %}" class="mt-2 inline-block bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">Report Issue</a>
+    </div>
+</div>
+    </main>
+    
+    <!-- Calendar Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: [
+                    {% for due in dues %}
+                    {
+                        title: 'Fee Due: ₹{{ due.due_amount }}',
+                        start: '{{ due.due_date|date:"Y-m-d" }}',
+                        description: 'Due for semester {{ due.semester.semester }}',
+                        color: '#FF0000'
+                    },
+                    {% endfor %}
+                ]
+            });
+            calendar.render();
+        });
+    </script>
+    
+{% endblock %}

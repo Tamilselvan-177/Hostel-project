@@ -1,0 +1,121 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block content %}
+<main class="bg-gray-100 h-screen flex items-center justify-center">
+    <div class="w-full max-w-4xl p-8">
+        <!-- Hosteller Profile Heading -->
+        <h1 class="text-5xl font-bold text-center text-black mb-8">Hosteller Profile</h1>
+
+        <!-- Profile Box -->
+        <div class="bg-white p-8 rounded-lg shadow-lg space-y-6">
+            <div class="text-center">
+                <!-- Profile Picture: use profile_picture if available, else fallback to placeholder -->
+                <img id="profilePic" class="w-32 h-32 rounded-full mx-auto mb-4" 
+                     src="{% if profile.profile_picture %}{{ profile.profile_picture.url }}{% else %}https://via.placeholder.com/150{% endif %}" 
+                     alt="Profile Picture">
+                     
+                     <div class="flex justify-center space-x-4">
+                        <!-- <label for="profileImage" class="text-blue-600 cursor-pointer hover:text-blue-700">
+                            Change Profile Picture
+                        </label> -->
+                        <!-- <input type="file" id="profileImage" name="profile_picture" class="hidden" onchange="updateProfilePic()" disabled> -->
+                    </div>
+            </div>
+
+            <!-- Profile Information (all fields remain disabled) -->
+            <form action="{% url 'profile' %}" method="POST" id="profileForm" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Name -->
+                        <div>
+                            <label for="name" class="block text-gray-600">Name</label>
+                            <input type="text" id="name" name="name" 
+                                   class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                                   value="{{ user.first_name }} {{ user.last_name }}" disabled>
+                        </div>
+
+                        <!-- Register Number (using username as register number) -->
+                        <div>
+                            <label for="register_number" class="block text-gray-600">Register Number</label>
+                            <input type="text" id="register_number" name="register_number" 
+                                   class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                                   value="{{ user.username }}" disabled>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Phone Number -->
+                        <div>
+                            <label for="phone_number" class="block text-gray-600">Phone Number</label>
+                            <input type="text" id="phone_number" name="phone_number" 
+                                   class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                                   value="{{ profile.phone_number }}" disabled>
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            <label for="email" class="block text-gray-600">Email</label>
+                            <input type="email" id="email" name="email" 
+                                   class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                                   value="{{ user.email }}" disabled>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Address -->
+                        <div>
+                            <label for="address" class="block text-gray-600">Address</label>
+                            <textarea id="address" name="address" rows="3" 
+                                      class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" disabled>
+{{ profile.address|default:"123 Main St, City, Country" }}
+                            </textarea>
+                        </div>
+                    </div>
+
+                    <!-- Room Details -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="text-xl font-semibold text-gray-800">Room Details</h3>
+                        <p class="text-gray-600">
+                            Hostel: {{ profile.hostel|default:"N/A" }} | Room: {{ profile.room_number|default:"N/A" }} | Bed: {{ profile.bed|default:"N/A" }}
+                        </p>
+                        <p class="text-gray-600">Roommates: Alex, Sam</p>
+                    </div>
+           
+                    <!-- Save button div (initially hidden) -->
+                    <div id="saveButtonDiv" class="text-center mt-6 hidden">
+                        <button type="submit" class="w-full py-3 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition duration-200">
+                            Save Profile Picture
+                        </button>
+                        </div>
+                    </form>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+</style>
+
+<script>
+    // Function to update the profile picture preview and reveal the save button
+    function updateProfilePic() {
+        const profileImage = document.getElementById('profileImage').files[0];
+        if (profileImage) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profilePic').src = e.target.result;
+                // Show the save button once an image is selected
+                document.getElementById('saveButtonDiv').classList.remove('hidden');
+            };
+            reader.readAsDataURL(profileImage);
+        }
+    }
+</script>
+{% endblock %}

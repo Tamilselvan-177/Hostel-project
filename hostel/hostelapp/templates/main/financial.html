@@ -1,0 +1,157 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block content %}
+<main class="pt-20 pb-10 container mx-auto px-4 md:px-10">
+  
+  <!-- Flash Messages -->
+  {% if messages %}
+  <div class="max-w-4xl mx-auto mb-4">
+    {% for message in messages %}
+    <div class="p-3 text-white rounded-lg shadow-md {% if message.tags == 'success' %} bg-green-600 {% else %} bg-red-600 {% endif %}">
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Due List -->
+  <section class="bg-red-500 text-white p-4 md:p-6 rounded-lg shadow-md mb-6 max-w-4xl mx-auto">
+    <h2 class="text-xl font-semibold flex items-center"><i class="fas fa-exclamation-circle mr-2"></i> DUE LIST</h2>
+    <div class="bg-white text-gray-900 p-4 rounded-lg mt-4 overflow-x-auto">
+      <table class="w-full text-left border border-gray-300">
+        <thead>
+          <tr class="border-b border-gray-300 bg-gray-100">
+            <th class="py-1 px-2 text-sm">Fee Type</th>
+            <th class="py-1 px-2 text-sm">Amount</th>
+            <th class="py-1 px-2 text-sm">Due Date</th>
+            <th class="py-1 px-2 text-sm text-center">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for payment in due_payments %}
+          <tr class="border-b border-gray-200">
+            <td class="py-1 px-2 text-sm">{{ payment.semester.semester }} Semester Fees</td>
+            <td class="py-1 px-2 text-sm">&#8377;{{ payment.balance }}</td>
+            <td class="py-1 px-2 text-sm">{{ payment.date_paid|date:"d/m/Y" }}</td>
+            <td class="py-1 px-2 text-sm text-center">
+              <form method="post" action="" class="payment-form">
+                {% csrf_token %}
+                <input type="hidden" name="due_id" value="{{ payment.id }}">
+                <input type="hidden" name="mobile_number" class="mobile-number">
+                <input type="hidden" name="email_id" class="email-id">
+                <select name="payment_option" required class="px-4 py-2">
+                    <option value="full">Pay Full Amount (₹{{ payment.balance }})</option>
+                    {% if payment.balance >= payment.semester.split_amount_1 and payment.semester.split_amount_1 %}
+                        <option value="split_1">Pay Split Amount 1 (₹{{ payment.semester.split_amount_1 }})</option>
+                    {% endif %}
+                    {% if payment.balance >= payment.semester.split_amount_2 and payment.semester.split_amount_2 %}
+                        <option value="split_2">Pay Split Amount 2 (₹{{ payment.semester.split_amount_2 }})</option>
+                    {% endif %}
+                </select>
+                <button type="button" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-500 mt-2 open-modal" data-payment-id="{{ payment.id }}">Pay Now</button>
+              </form>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" class="text-center py-2">No due payments</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Payment History -->
+  <section class="bg-teal-600 text-white p-4 md:p-6 rounded-lg shadow-md max-w-4xl mx-auto">
+    <h2 class="text-xl font-semibold flex items-center"><i class="fas fa-money-check-alt mr-2"></i> PAYMENT HISTORY</h2>
+    <div class="bg-white text-gray-900 p-4 rounded-lg mt-4 overflow-x-auto">
+      <table class="w-full text-left border border-gray-300">
+        <thead>
+          <tr class="border-b border-gray-300 bg-gray-100">
+            <th class="py-1 px-2 text-sm">Fee Type</th>
+            <th class="py-1 px-2 text-sm">Amount</th>
+            <th class="py-1 px-2 text-sm">Mode of Payment</th>
+            <th class="py-1 px-2 text-sm">Reference</th>
+            <th class="py-1 px-2 text-sm">Dated On</th>
+            <th class="py-1 px-2 text-sm text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for payment in payment_history %}
+          <tr class="border-b border-gray-200">
+            <td class="py-1 px-2 text-sm">{{ payment.semester.semester }} Semester Fees</td>
+            <td class="py-1 px-2 text-sm">&#8377;{{ payment.amount_paid }}</td>
+            <td class="py-1 px-2 text-sm">{{ payment.payment_mode }}</td>
+            <td class="py-1 px-2 text-sm">{{ payment.transaction_id }}</td>
+            <td class="py-1 px-2 text-sm">{{ payment.date_paid|date:"d/m/Y H:i A" }}</td>
+            <td class="py-1 px-2 text-sm text-center">
+              <a href="{% url 'generate_invoice' payment.id %}" target="_blank">
+                <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-500">Print</button>
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="text-center py-2">No payment history found</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<!-- Modal (Overlay Form) -->
+<div id="paymentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center">
+  <div class="bg-white p-6 rounded-lg w-96 shadow-md">
+    <h2 class="text-lg font-semibold mb-4">Enter Payment Details</h2>
+    <label class="block mb-2" >Mobile Number:</label>
+    <input type="text" id="mobileNumber" class="w-full px-3 py-2 border rounded-lg mb-4" required>
+    <label class="block mb-2">Email ID:</label>
+    <input type="email" id="emailID" class="w-full px-3 py-2 border rounded-lg mb-4" required>
+    <div class="flex justify-between">
+      <button class="bg-gray-400 text-white px-4 py-2 rounded-lg close-modal">Cancel</button>
+      <button class="bg-blue-600 text-white px-4 py-2 rounded-lg proceed-payment">Proceed to Pay</button>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+  document.querySelector('.proceed-payment').addEventListener('click', function() {
+    let modal = document.getElementById('paymentModal');
+    let paymentId = modal.dataset.paymentId;
+    let mobileNumber = document.getElementById('mobileNumber').value;
+    let emailID = document.getElementById('emailID').value;
+
+    if (!mobileNumber || !emailID) {
+        alert("Please enter your mobile number and email ID.");
+        return;
+    }
+
+    let paymentForm = document.querySelector(`form input[value="${paymentId}"]`).closest('form');
+    paymentForm.querySelector('.mobile-number').value = mobileNumber;
+    paymentForm.querySelector('.email-id').value = emailID;
+    
+    paymentForm.submit();
+});
+
+document.querySelectorAll('.open-modal').forEach(button => {
+  button.addEventListener('click', function() {
+    document.getElementById('paymentModal').classList.remove('hidden');
+    document.getElementById('paymentModal').dataset.paymentId = this.dataset.paymentId;
+  });
+});
+
+document.querySelector('.close-modal').addEventListener('click', function() {
+  document.getElementById('paymentModal').classList.add('hidden');
+});
+
+document.querySelector('.proceed-payment').addEventListener('click', function() {
+  let paymentForm = document.querySelector(`form input[value="${document.getElementById('paymentModal').dataset.paymentId}"]`).closest('form');
+  paymentForm.submit();
+});
+</script>
+{% endblock %}
